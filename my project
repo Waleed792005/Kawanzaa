@@ -1,0 +1,587 @@
+{
+  "name": "web-creator",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "node scripts/build.mjs",
+    "build": "node scripts/build.mjs --production"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.0.1",
+    "@radix-ui/react-accordion": "^1.2.8",
+    "@radix-ui/react-alert-dialog": "^1.1.11",
+    "@radix-ui/react-aspect-ratio": "^1.1.4",
+    "@radix-ui/react-avatar": "^1.1.7",
+    "@radix-ui/react-checkbox": "^1.2.3",
+    "@radix-ui/react-collapsible": "^1.1.8",
+    "@radix-ui/react-context-menu": "^2.2.12",
+    "@radix-ui/react-dialog": "^1.1.11",
+    "@radix-ui/react-dropdown-menu": "^2.1.12",
+    "@radix-ui/react-hover-card": "^1.1.11",
+    "@radix-ui/react-label": "^2.1.4",
+    "@radix-ui/react-menubar": "^1.1.12",
+    "@radix-ui/react-navigation-menu": "^1.2.10",
+    "@radix-ui/react-popover": "^1.1.11",
+    "@radix-ui/react-progress": "^1.1.4",
+    "@radix-ui/react-radio-group": "^1.3.4",
+    "@radix-ui/react-scroll-area": "^1.2.6",
+    "@radix-ui/react-select": "^2.2.2",
+    "@radix-ui/react-separator": "^1.1.4",
+    "@radix-ui/react-slider": "^1.3.2",
+    "@radix-ui/react-slot": "^1.2.0",
+    "@radix-ui/react-switch": "^1.2.2",
+    "@radix-ui/react-tabs": "^1.1.9",
+    "@radix-ui/react-toast": "^1.2.11",
+    "@radix-ui/react-toggle": "^1.1.6",
+    "@radix-ui/react-toggle-group": "^1.1.7",
+    "@radix-ui/react-tooltip": "^1.2.4",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
+    "date-fns": "^3.6.0",
+    "embla-carousel-react": "^8.6.0",
+    "i18next": "^25.1.2",
+    "input-otp": "^1.4.2",
+    "lucide-react": "^0.503.0",
+    "motion": "^12.17.0",
+    "next-themes": "^0.4.6",
+    "react": "^18.3.1",
+    "react-day-picker": "^8.10.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.56.1",
+    "react-i18next": "^15.5.1",
+    "react-resizable-panels": "^2.1.9",
+    "react-router": "^7.5.3",
+    "recharts": "^2.15.3",
+    "sonner": "^2.0.3",
+    "tailwind-merge": "^3.2.0",
+    "vaul": "^1.1.2",
+    "zod": "^3.24.3",
+    "zustand": "^5.0.5"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.3",
+    "@types/react-dom": "^19.1.3",
+    "autoprefixer": "^10.4.21",
+    "esbuild": "0.25.4",
+    "esbuild-style-plugin": "^1.6.3",
+    "postcss": "^8.5.3",
+    "rimraf": "^6.0.1",
+    "tailwindcss": "^3.4.17",
+    "tailwindcss-animate": "^1.0.7"
+  }
+}
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}
+<!--
+  index.html
+  صفحة الاستضافة الرئيسية للتطبيق، تحتوي على العنصر الجذري وروابط الميتا.
+-->
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="description" content="متجر حديث مبني بـ React و Tailwind" />
+    <title>Web Creator</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 24 24'%3E%3Cpath fill='%23000000' d='M12 2L2 7l10 5l10-5zm0 9L2 6v11l10 5l10-5V6z'/%3E%3C/svg%3E" />
+  </head>
+  <body class="min-h-screen bg-white text-gray-900">
+    <div id="app"></div>
+    <!-- ملف الجافاسكربت الناتج عن esbuild -->
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
+/**
+ * postcss.config.cjs
+ * ضبط PostCSS لتشغيل Tailwind و Autoprefixer أثناء البناء.
+ */
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+}
+/**
+ * tailwind.config.cjs
+ * ضبط Tailwind مع مسارات المحتوى والإضافات الأساسية.
+ */
+module.exports = {
+  darkMode: ["class"],
+  content: [
+    "./index.html",
+    "./src/**/*.{ts,tsx,js,jsx}"
+  ],
+  theme: {
+    extend: {
+      colors: {
+        border: "hsl(214, 10%, 85%)",
+        background: "#ffffff",
+        foreground: "#0f172a",
+        primary: {
+          DEFAULT: "#0ea5e9",
+          foreground: "#ffffff",
+        },
+        muted: {
+          DEFAULT: "#f1f5f9",
+          foreground: "#475569",
+        },
+      },
+      boxShadow: {
+        soft: "0 8px 30px rgba(0,0,0,0.06)"
+      }
+    },
+  },
+  plugins: [require("tailwindcss-animate")],
+}
+/**
+ * scripts/build.mjs
+ * سكربت البناء والتشغيل المحلي باستخدام esbuild مع دعم Tailwind/PostCSS.
+ * - dev: مراقبة + خادم محلي على 5173
+ * - build: إخراج إنتاجي داخل dist/
+ */
+
+import esbuild from "esbuild"
+import { stylePlugin } from "esbuild-style-plugin"
+import { promises as fs } from "node:fs"
+import path from "node:path"
+import url from "node:url"
+
+const isProd = process.argv.includes("--production")
+const __filename = url.fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const root = path.resolve(__dirname, "..")
+const dist = path.join(root, "dist")
+const indexHtmlSrc = path.join(root, "index.html")
+const indexHtmlOut = path.join(dist, "index.html")
+
+/** تنظيف مجلد الإخراج */
+async function clean() {
+  await fs.rm(dist, { recursive: true, force: true })
+}
+
+/** نسخ index.html إلى dist */
+async function copyIndex() {
+  await fs.mkdir(dist, { recursive: true })
+  await fs.copyFile(indexHtmlSrc, indexHtmlOut)
+}
+
+/** خيارات البناء الأساسية */
+const buildOptions = {
+  entryPoints: [path.join(root, "src", "main.tsx")],
+  outdir: dist,
+  bundle: true,
+  sourcemap: !isProd,
+  minify: isProd,
+  target: ["es2020"],
+  format: "esm",
+  jsx: "automatic",
+  define: {
+    "process.env.NODE_ENV": JSON.stringify(isProd ? "production" : "development"),
+  },
+  loader: {
+    ".png": "file",
+    ".svg": "file",
+    ".jpg": "file",
+    ".jpeg": "file",
+    ".gif": "file",
+    ".webp": "file",
+  },
+  plugins: [
+    /** تشغيل PostCSS/Tailwind على ملفات CSS المستوردة (مثل shadcn.css) وحقنها بشكل صحيح */
+    stylePlugin({
+      postcss: true,
+    }),
+    {
+      /** مكوّن لإعادة نسخ index.html بعد كل بناء */
+      name: "copy-index-on-end",
+      setup(build) {
+        build.onEnd(async () => {
+          await copyIndex()
+        })
+      },
+    },
+  ],
+}
+
+/** نقطة الدخول */
+async function run() {
+  await clean()
+
+  if (isProd) {
+    await esbuild.build(buildOptions)
+    await copyIndex()
+    console.log("✓ Build completed in dist/")
+    return
+  }
+
+  const ctx = await esbuild.context(buildOptions)
+  await ctx.watch()
+  await copyIndex()
+
+  const server = await ctx.serve({
+    port: 5173,
+    servedir: dist,
+  })
+
+  const host = server.host || "localhost"
+  const url = `http://${host}:${server.port}`
+  console.log(`Dev server running → ${url}`)
+}
+
+run().catch((e) => {
+  console.error(e)
+  process.exit(1)
+})
+/**
+ * src/main.tsx
+ * نقطة الدخول للتطبيق: تهيئة React واحتواء CSS (Tailwind/shadcn) وتهيئة App.
+ */
+
+import { createRoot } from "react-dom/client"
+import React from "react"
+import App from "./App"
+import "./shadcn.css"
+
+/** إنشاء الجذر والبدء */
+const root = createRoot(document.getElementById("app") as HTMLElement)
+root.render(<App />)
+/**
+ * src/App.tsx
+ * المكوّن الجذري: ترويسة SEO، الراوتر، شريط الإعلان، و Toaster للتنبيهات.
+ */
+
+import React from "react"
+import { HashRouter, Routes, Route } from "react-router"
+import { Toaster } from "sonner"
+import SeoHead from "./components/SeoHead"
+import Navbar from "./components/Navbar"
+import AnnouncementBar from "./components/AnnouncementBar"
+import HomePage from "./pages/Home"
+
+/** تطبيق رئيسي مع توجيه بسيط */
+export default function App(): JSX.Element {
+  return (
+    <>
+      {/* وسوم SEO عامة */}
+      <SeoHead title="Web Creator" description="واجهة متجر حديثة مبنية بـ React + Tailwind" />
+
+      <HashRouter>
+        <div className="min-h-screen bg-background text-foreground">
+          <AnnouncementBar />
+          <Navbar />
+          <main className="container mx-auto px-4 py-8">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+            </Routes>
+          </main>
+        </div>
+      </HashRouter>
+
+      {/* حاوية تنبيهات Sonner مع RTL */}
+      <Toaster dir="rtl" position="top-center" richColors closeButton />
+    </>
+  )
+}
+/**
+ * src/components/SeoHead.tsx
+ * مكوّن خفيف لتحديث العنوان والوصف في وثيقة الصفحة بدون مكتبات إضافية.
+ */
+
+import React, { useEffect } from "react"
+
+/** خصائص وسوم SEO الأساسية */
+export interface SeoHeadProps {
+  /** عنوان الصفحة */
+  title?: string
+  /** وصف الصفحة */
+  description?: string
+}
+
+/** مكوّن يقوم بتحديث title و meta[description] حسب الخصائص */
+export default function SeoHead({ title, description }: SeoHeadProps): JSX.Element | null {
+  useEffect(() => {
+    if (title) {
+      document.title = title
+    }
+    if (description) {
+      let meta = document.querySelector("meta[name='description']") as HTMLMetaElement | null
+      if (!meta) {
+        meta = document.createElement("meta")
+        meta.name = "description"
+        document.head.appendChild(meta)
+      }
+      meta.content = description
+    }
+  }, [title, description])
+
+  return null
+}
+/**
+ * src/components/Navbar.tsx
+ * شريط تنقل علوي بسيط وثابت مع رابط للصفحة الرئيسية.
+ */
+
+import React from "react"
+import { Link } from "react-router"
+import { ShoppingCart } from "lucide-react"
+
+/** شريط التنقل */
+export default function Navbar(): JSX.Element {
+  return (
+    <header className="sticky top-0 z-40 w-full border-b bg-white/80 backdrop-blur">
+      <div className="container mx-auto flex h-14 items-center justify-between px-4">
+        <Link to="/" className="flex items-center gap-2 font-semibold text-slate-800">
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-primary text-white shadow-soft">
+            <ShoppingCart size={18} />
+          </span>
+          <span>Web Creator</span>
+        </Link>
+        <nav className="hidden items-center gap-6 text-sm font-medium sm:flex">
+          <a href="https://github.com" target="_blank" rel="noreferrer" className="text-slate-600 hover:text-slate-900 transition-colors">
+            GitHub
+          </a>
+          <a href="#features" className="text-slate-600 hover:text-slate-900 transition-colors">
+            المزايا
+          </a>
+        </nav>
+      </div>
+    </header>
+  )
+}
+/**
+ * src/components/AnnouncementBar.tsx
+ * شريط إعلان بسيط أعلى الصفحة مع خيار الإخفاء.
+ */
+
+import React, { useState } from "react"
+
+/** شريط إعلان قابل للإخفاء */
+export default function AnnouncementBar(): JSX.Element | null {
+  const [visible, setVisible] = useState(true)
+  if (!visible) return null
+
+  return (
+    <div className="w-full bg-primary text-white">
+      <div className="container mx-auto flex items-center justify-between px-4 py-2 text-sm">
+        <p className="font-medium">خصم 20% لفترة محدودة — جرّب الشراء الآن!</p>
+        <button
+          onClick={() => setVisible(false)}
+          className="rounded-md border border-white/20 bg-white/10 px-3 py-1 text-white hover:bg-white/20 transition"
+          aria-label="إغلاق الشريط"
+        >
+          إغلاق
+        </button>
+      </div>
+    </div>
+  )
+}
+/**
+ * src/pages/Home.tsx
+ * صفحة رئيسية تتضمن Hero جذّاب مع صورة Placeholder ذكية وقسم مزايا.
+ */
+
+import React from "react"
+import { ArrowRight } from "lucide-react"
+
+/** قسم Hero */
+function Hero(): JSX.Element {
+  return (
+    <section className="grid items-center gap-8 md:grid-cols-2">
+      <div>
+        <h1 className="text-3xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-4xl md:text-5xl">
+          واجهة متجر حديثة وسريعة
+        </h1>
+        <p className="mt-3 max-w-prose text-slate-600">
+          ابدأ مشروعك بواجهة أنيقة مبنية بـ React + Tailwind + esbuild. تصميم مُحسّن للغة العربية ويدعم RTL.
+        </p>
+        <div className="mt-6 flex flex-wrap items-center gap-3">
+          <a
+            href="#features"
+            className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-white shadow-soft hover:opacity-90 transition"
+          >
+            اكتشف المزايا
+            <ArrowRight size={16} />
+          </a>
+          <a
+            href="https://github.com"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-transparent px-4 py-2 text-slate-700 hover:bg-slate-50 transition"
+          >
+            مستودع GitHub
+          </a>
+        </div>
+      </div>
+
+      <div className="relative aspect-video w-full overflow-hidden rounded-xl border shadow-soft">
+        <img src="https://pub-cdn.sider.ai/u/U08XHOY8820/web-coder/6895fe09119369152a9a3463/resource/e8ee4b9e-92fc-4cad-90f6-ef8b12671f94.jpg" className="object-cover h-full w-full" alt="Hero" />
+      </div>
+    </section>
+  )
+}
+
+/** قسم المزايا */
+function Features(): JSX.Element {
+  const items = [
+    { title: "أداء عالٍ", desc: "بناء سريع باستخدام esbuild وتهيئة إنتاجية بسيطة." },
+    { title: "تصميم أنيق", desc: "Tailwind مع متغيرات ألوان وتنسيقات جاهزة و RTL." },
+    { title: "توجيه مرن", desc: "React Router عبر HashRouter دون إعدادات خادم خاصة." },
+  ]
+
+  return (
+    <section id="features" className="mt-16 grid gap-6 md:grid-cols-3">
+      {items.map((it) => (
+        <div key={it.title} className="rounded-xl border bg-white p-5 shadow-soft">
+          <h3 className="text-lg font-semibold text-slate-900">{it.title}</h3>
+          <p className="mt-2 text-sm text-slate-600">{it.desc}</p>
+        </div>
+      ))}
+    </section>
+  )
+}
+
+/** الصفحة الرئيسية */
+export default function HomePage(): JSX.Element {
+  return (
+    <div className="space-y-16">
+      <Hero />
+      <Features />
+    </div>
+  )
+}
+/**
+ * src/shadcn.css
+ * ملف الأنماط الرئيسي: يُشغّل Tailwind ويعرّف متغيرات للألوان وحركات بسيطة.
+ */
+
+/* Tailwind layers */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Root variables (مستوحاة من إعدادات shadcn الافتراضية) */
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 47.4% 11.2%;
+
+    --primary: 199 89% 53%;
+    --primary-foreground: 0 0% 100%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --border: 214.3 31.8% 91.4%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html,
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+
+  .container {
+    @apply max-w-6xl;
+  }
+}
+
+/* Helpers */
+@layer utilities {
+  .bg-background { background-color: hsl(var(--background)); }
+  .text-foreground { color: hsl(var(--foreground)); }
+  .bg-primary { background-color: hsl(var(--primary)); }
+  .text-primary-foreground { color: hsl(var(--primary-foreground)); }
+  .border { border-color: hsl(var(--border)); }
+}
+# 
+# .github/workflows/deploy.yml
+# نشر تلقائي إلى GitHub Pages. يتعامل مع وجود/عدم وجود package-lock.json.
+#
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm" # يعمل أفضل مع package-lock.json، لكنه لا يعيق البناء عند عدم وجوده
+
+      - name: Install dependencies
+        # إن وُجد lockfile نستخدم npm ci، وإلا نستخدم npm install
+        run: |
+          if [ -f package-lock.json ]; then
+            echo "Found package-lock.json → running npm ci"
+            npm ci
+          else
+            echo "No package-lock.json → running npm install"
+            npm install --no-audit --no-fund
+          fi
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+# Node and build
+node_modules
+dist
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
