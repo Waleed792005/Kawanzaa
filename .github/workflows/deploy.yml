@@ -1,0 +1,23 @@
+  - name: Setup Node
+    uses: actions/setup-node@v4
+    with:
+      node-version: 20
+      cache: "npm"
+
+  - name: Install dependencies
+    run: |
+      if [ -f package-lock.json ]; then
+        echo "Found package-lock.json → running npm ci"
+        npm ci
+      else
+        echo "No package-lock.json → running npm install"
+        npm install --no-audit --no-fund
+      fi
+
+  - name: Build
+    run: npm run build
+
+  - name: Upload artifact
+    uses: actions/upload-pages-artifact@v3
+    with:
+      path: dist
